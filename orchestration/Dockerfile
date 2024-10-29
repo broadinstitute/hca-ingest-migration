@@ -1,7 +1,10 @@
 ## Builds the dagster "user code deployment" image that will
 ## hold our pipelines/solids/etc.
 
-FROM python:3.9.16-slim as base
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:distroless as base
+
+# Accept the SENTRY_DSN as a build arg
+ARG SENTRY_DSN
 
 ENV PYTHONFAULTHANDLER=1 \
   PYTHONUNBUFFERED=1 \
@@ -10,7 +13,7 @@ ENV PYTHONFAULTHANDLER=1 \
   PIP_DISABLE_PIP_VERSION_CHECK=on \
   PIP_DEFAULT_TIMEOUT=100 \
   POETRY_VERSION=1.1.8 \
-  SENTRY_DSN=https://922d76ad2dceb6cd328436ae551ffb11@o54426.ingest.sentry.io/4506559533088768
+  SENTRY_DSN=$SENTRY_DSN
 
 RUN pip install "poetry==$POETRY_VERSION"
 
