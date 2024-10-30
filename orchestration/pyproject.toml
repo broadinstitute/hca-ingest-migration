@@ -1,12 +1,14 @@
 [tool.poetry]
 name = "hca_orchestration"
-version = "0.1.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
+version = "0.2.0"
+description = "HCA ingest orchestration - a collection of scripts to manage HCA ingest"
+authors = ["Barbara Hill <bhill@broadinstitute.org>"]
+# TODO add the correct repository
+repository = ""
 
 [tool.poetry.dependencies]
 # to prevent unininteded upgrades we need to provide upperbound versions for the dependencies. For example ~3.4 instead of ^3.4
-python = "3.9.16"
+python = "~3"
 argo-workflows = "^5.0.0"
 broad-dagster-utils = "0.6.7"
 cached-property = "^1.5.2"

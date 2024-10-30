@@ -1,7 +1,8 @@
 ## Builds the dagster "user code deployment" image that will
-## hold our pipelines/solids/etc.
+## hold our ingest ops & jobs.
 
-FROM us.gcr.io/broad-dsp-gcr-public/base/python:distroless as base
+FROM python:3-slim AS build
+RUN python -m venv /venv
 
 # Accept the SENTRY_DSN as a build arg
 ARG SENTRY_DSN
@@ -23,16 +24,22 @@ RUN apt-get update -yqq
 COPY pyproject.toml /
 
 RUN mkdir /logs \
-    && poetry config virtualenvs.create false \
+    # TODO figure out how to expose this install to the dev env so we don't have to install twice
+    # && poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi --no-dev | tee /logs/poetry_install.log
 
 # Cleanup
 RUN  rm -rf /var/lib/apt/lists/* \
     &&  rm -rf /root/.cache  \
-    &&  rm -rf /usr/lib/python2.7 \
+    # &&  rm -rf /usr/lib/python3.12 \
     &&  rm -rf /usr/lib/x86_64-linux-gnu/guile
 
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:distroless
+
 # ==> Add user code layer
+WORKDIR /app
+COPY --from=build /venv /venv \
+    /logs /logs/
 COPY ./ /
 
 # builds with GitHub Action "Main Validation and Release" ../.github/workflows/build-and-publish-main.yaml
