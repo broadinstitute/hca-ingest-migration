@@ -34,7 +34,7 @@ jobs:
           buildArgs: SENTRY_DSN=${{ secrets.HCA_DAGSTER_SENTRY_DSN }}
           context: ./orchestration
           push: true
-          tags: us.gcr.io/broad-dsp-gcr-public/monster-hca-dagster:${{steps.get-artifact-slug.outputs.slug}}, us.gcr.io/broad-dsp-gcr-public/monster-hca-dagster:dev
+          tags: us.gcr.io/broad-dsp-gcr-public/monster-hca-dagster:${{steps.get-artifact-slug.outputs.slug}}, us.gcr.io/broad-dsp-gcr-public/monster-hca-dagster:dev-2
       - name: Push Compose Dev Env Docker image
         uses: docker/build-push-action@v6.4
         with:
