@@ -43,6 +43,7 @@ ARG SENTRY_DSN
 ENV SENTRY_DSN=$SENTRY_DSN
 
 # ==> Add user code layer
+# TODO add logs
 COPY ./ /
 
 # builds with GitHub Action "Main Validation and Release" ../.github/workflows/build-and-publish-main.yaml
