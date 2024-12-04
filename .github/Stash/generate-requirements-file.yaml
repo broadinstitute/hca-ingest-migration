@@ -1,7 +1,6 @@
 # generates a requirements.txt file from poetry.lock and commits it to the branch that triggered the workflow,
 # for SourceClear to use to scan for vulnerabilities.
 name: Generate requirements file
-
 on:
   pull_request:
     branches:

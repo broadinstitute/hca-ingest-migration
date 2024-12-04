@@ -1,4 +1,4 @@
-name: PR Validation for Main
+name: PR Validation for Main Branch
 on:
   pull_request:
     branches:

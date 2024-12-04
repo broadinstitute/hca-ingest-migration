@@ -1,5 +1,4 @@
-## Builds the dagster "user code deployment" image that will
-## hold our ingest ops & jobs.
+## Builds the dagster "user code deployment" image that will hold our ingest ops & jobs.
 
 # base python image, blessed by AppSec
 FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.12-debian AS base
