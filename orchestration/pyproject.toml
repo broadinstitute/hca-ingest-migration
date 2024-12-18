@@ -8,7 +8,7 @@ repository = ""
 
 [tool.poetry.dependencies]
 # to prevent unininteded upgrades we need to provide upperbound versions for the dependencies. For example ~3.4 instead of ^3.4
-python = "~3"
+python = "3.12"
 argo-workflows = "^5.0.0"
 broad-dagster-utils = "0.6.7"
 cached-property = "^1.5.2"
@@ -60,7 +60,7 @@ soft_delete = "hca_manage.soft_delete:run"
 job = "hca_manage.job:fetch_job_info"
 
 [build-system]
-requires = ["poetry-core<=1.1.9"]
+requires = ["poetry-core>=1.8.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.autopep8]
