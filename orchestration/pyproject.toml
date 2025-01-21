@@ -8,9 +8,10 @@ repository = ""
 
 [tool.poetry.dependencies]
 # to prevent unininteded upgrades we need to provide upperbound versions for the dependencies. For example ~3.4 instead of ^3.4
-python = "3.12"
+# updated to 3.12 when we upgrade to Dagster latest
+python = "3.10"
 argo-workflows = "^5.0.0"
-broad-dagster-utils = "0.6.7"
+broad-dagster-utils = "0.7.0a1"
 cached-property = "^1.5.2"
 cffi = "1.16.0"
 # TODO: we'll probably want to use just the dagster version here and not the API versions as well
