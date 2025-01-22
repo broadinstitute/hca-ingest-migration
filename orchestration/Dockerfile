@@ -2,9 +2,9 @@
 
 # base python image, blessed by AppSec
 # FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.12-debian AS base
-# using 3.10 for now as many of the old Dagster dependencies are EOL.
+# using 3.9 for now as many of the old Dagster dependencies are EOL.
 # I'll upgrade to 3.12 once I've updated to Dagster latest
-FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.10-debian AS base
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.9-debian AS base
 
 ENV PYTHONFAULTHANDLER=1 \
   PYTHONUNBUFFERED=1 \
@@ -39,7 +39,6 @@ RUN mkdir /logs \
     # && poetry config virtualenvs.create false \
     # && poetry install --no-interaction --no-ansi --no-dev | tee /logs/poetry_install.log \
     # not sure about no-root, and should refactor pyproject.toml to no longer have a dev section \
-    # TODO I think we have to install in /app
     && poetry install --no-root --no-dev && rm -rf $POETRY_CACHE_DIR
 
 # Cleanup extra files - though if we are using a multi-stage build, this is not necessary... right?
@@ -60,6 +59,7 @@ ENV PATH="/app/.venv/bin:$PATH"
 # ==> Add user code layer
 # TODO what if we just copied hca_orchestration & logs?
 COPY --from=base ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+# TODO copy to app or move out of app before ending?
 COPY ./ /
 
 # builds with GitHub Action "Main Validation and Release" ../.github/workflows/build-and-publish-main.yaml
