@@ -38,7 +38,8 @@ RUN mkdir /logs \
     # https://github.com/python-poetry/poetry/blob/246e181483a10e0ef75bca00dc5ccf38ac38f05b/docker-examples/poetry-multistage/Dockerfile
     # && poetry config virtualenvs.create false \
     # && poetry install --no-interaction --no-ansi --no-dev | tee /logs/poetry_install.log \
-    # not sure about no-root, and should refactor pyproject.toml to no longer have a dev section
+    # not sure about no-root, and should refactor pyproject.toml to no longer have a dev section \
+    # TODO I think we have to install in /app
     && poetry install --no-root --no-dev && rm -rf $POETRY_CACHE_DIR
 
 # Cleanup extra files - though if we are using a multi-stage build, this is not necessary... right?
