@@ -60,7 +60,8 @@ ENV PATH="/app/.venv/bin:$PATH"
 # TODO what if we just copied hca_orchestration & logs?
 COPY --from=base ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 # TODO copy to app or move out of app before ending?
-COPY ./ /
+# COPY ./ /
+COPY . .
 
 # builds with GitHub Action "Main Validation and Release" ../.github/workflows/build-and-publish-main.yaml
 # tag = us.gcr.io/broad-dsp-gcr-public/monster-hca-dagster:${{steps.get-artifact-slug.outputs.slug}}
