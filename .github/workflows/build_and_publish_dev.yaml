@@ -34,6 +34,7 @@ jobs:
       - name: Get artifact slug
         id: get-artifact-slug
         run: 'echo ::set-output name=slug::$(git rev-parse --short "$GITHUB_SHA")'
+      # TODO why do I have to supply the poetry.lock? Why is this not built here?
       - name: Push Dagster User Code Docker image
         uses: docker/build-push-action@v6
         with:
