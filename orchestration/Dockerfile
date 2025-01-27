@@ -16,7 +16,7 @@ ENV PYTHONFAULTHANDLER=1 \
   # Poetry settings for multistage build
   # includes PYTHONDONTWRITEBYTECODE=1 to prevent __pycache__ files from being written to disk - see above
   # https://github.com/python-poetry/poetry/blob/246e181483a10e0ef75bca00dc5ccf38ac38f05b/docker-examples/poetry-multistage/Dockerfile
-  POETRY_VERSION=1.8.0 \
+  POETRY_VERSION=2.0 \
   POETRY_HOME=/opt/poetry \
   POETRY_NO_INTERACTION=1 \
   POETRY_VIRTUALENVS_IN_PROJECT=1 \
@@ -44,7 +44,7 @@ RUN mkdir /logs \
 # Cleanup extra files - though if we are using a multi-stage build, this is not necessary... right?
 RUN  rm -rf /var/lib/apt/lists/* \
     &&  rm -rf /root/.cache  \
-    &&  rm -rf /usr/lib/python3.10 \
+    &&  rm -rf /usr/lib/python3.9 \
     &&  rm -rf /usr/lib/x86_64-linux-gnu/guile
 
 # copy the user code into the blessed final image with minimal footprint
@@ -59,8 +59,6 @@ ENV PATH="/app/.venv/bin:$PATH"
 # ==> Add user code layer
 # TODO what if we just copied hca_orchestration & logs?
 COPY --from=base ${VIRTUAL_ENV} ${VIRTUAL_ENV}
-# TODO copy to app or move out of app before ending?
-# COPY ./ /
 COPY . .
 
 # builds with GitHub Action "Main Validation and Release" ../.github/workflows/build-and-publish-main.yaml
