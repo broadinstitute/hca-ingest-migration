@@ -11,18 +11,18 @@ authors = ["Barbara Hill <bhill@broadinstitute.org>"]
 # updated to 3.12 when we upgrade to Dagster latest
 python = "~3.9"
 argo-workflows = "^5.0.0"
-broad-dagster-utils = "0.6.7"
+broad-dagster-utils = "0.7.0a2"
 cached-property = "^1.5.2"
 cffi = "1.16.0"
 # TODO: we'll probably want to use just the dagster version here and not the API versions as well
 # https://github.com/dagster-io/dagster/blob/master/MIGRATION.md#migrating-to-10
-dagster = "0.12.14"
-dagster-gcp = "0.12.14"
-dagster-k8s = "0.12.14"
-dagster-postgres = "0.12.14"
-dagster-slack = "0.12.14"
+dagster = "0.13.0"
+dagster-gcp = "0.13.0"
+dagster-k8s = "0.13.0"
+dagster-postgres = "0.13.0"
+dagster-slack = "0.13.0"
 data-repo-client = "^1.134.0"
-google-cloud-bigquery = "^2.4.0"
+google-cloud-bigquery = "^3.27.0"
 google-cloud-storage = "^1.3.5"
 graphql-ws = "<0.4.0"
 grpcio = "1.53.0"
@@ -32,8 +32,9 @@ markupsafe = "2.0.1"
 oauthlib = "3.2.2"
 pendulum = "2.1.2"
 protobuf = "3.20.2"
+psycopg2-binary = "2.9.3"
 python-dateutil = "^2.8.1"
-pyyaml = "^5.3"
+pyyaml = "^6.0.2"
 rfc3339-validator = "^0.1.4"
 sentry-sdk = "^1.39.2"
 typing-extensions = "^3.7.4"
@@ -41,12 +42,9 @@ typing-extensions = "^3.7.4"
 # will have to update dagit which means updating broad-dagster-utils - FE-36
 aiohttp = "3.9.4"
 
-[tool.poetry.dev-dependencies]
-# NB this notation is not preferred after poetry 1.2.0 https://python-poetry.org/docs/master/managing-dependencies/
-# TODO update to the new notation
-# poetry.group.dev.dependencies
+[tool.poetry.group.dev.dependencies]
 autopep8 = "^1.5.5"
-dagit = "0.12.14"
+dagit = "0.13.0"
 flake8 = "^3.8.4"
 mypy = "^0.812"
 pdbpp = "^0.10.2"
@@ -63,7 +61,7 @@ soft_delete = "hca_manage.soft_delete:run"
 job = "hca_manage.job:fetch_job_info"
 
 [build-system]
-requires = ["poetry-core>=1.8.0"]
+requires = ["poetry-core>=2.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.autopep8]
