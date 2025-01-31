@@ -39,7 +39,7 @@ RUN mkdir /logs \
     # && poetry config virtualenvs.create false \
     # && poetry install --no-interaction --no-ansi --no-dev | tee /logs/poetry_install.log \
     # not sure about no-root, and should refactor pyproject.toml to no longer have a dev section \
-    && poetry install --no-root --no-dev && rm -rf $POETRY_CACHE_DIR
+    && poetry install --no-root --without dev && rm -rf $POETRY_CACHE_DIR
 
 # Cleanup extra files - though if we are using a multi-stage build, this is not necessary... right?
 RUN  rm -rf /var/lib/apt/lists/* \
@@ -66,5 +66,10 @@ COPY . .
 #
 # For Dev
 # to build and run locally
-# docker build -t us.gcr.io/broad-dsp-gcr-public/monster-hca-dagster:<new_version> .
+# docker build -t us.gcr.io/broad-dsp-gcr-public/monster-hca-dagster:<new_version>
+# TODO - look at the M42 Dockerfile for how to build for multiple platforms
+# probably need to review this https://docs.docker.com/desktop/multi-arch/ and this https://docs.docker.com/buildx/working-with-buildx/
+# since I'm using colima and not Docker Desktop
+# TODO - is that necessary for the orch image? or just my dev env?
+# docker buildx build --platform=linux/amd64,linux/arm64 .
 # docker run --rm -it us.gcr.io/broad-dsp-gcr-public/monster-hca-dagster:<new_version>
