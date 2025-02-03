@@ -39,7 +39,6 @@ rfc3339-validator = "^0.1.4"
 sentry-sdk = "^1.39.2"
 # To fix a typing issue - pinning typing-extensions to 3.7.4 did not work
 referencing = "0.36.2"
-typing-extensions = "^3.7.4"
 # werkzeug = "2.2.3"
 # will have to update dagit which means updating broad-dagster-utils - FE-36
 aiohttp = "3.9.4"
