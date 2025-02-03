@@ -26,8 +26,9 @@ jobs:
       # TODO upgrade scala?
       - uses: olafurpg/setup-scala@v10
         with:
-          # TODO might want to upgrade this too
-          java-version: graalvm@20.0.0
+          distribution: 'temurin'
+          java-version: '8'
+          cache: 'sbt'
       - name: Push Scala Dataflow Docker image
         run: sbt publish
         # us.gcr.io/broad-dsp-gcr-public/hca-transformation-pipeline
