@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, Mock, patch
 import hca_orchestration.resources.data_repo_service
 import pytest
 from dagster import Failure, JobDefinition, ResourceDefinition, file_relative_path
-from dagster.core.execution.execution_results import InProcessGraphResult
+from dagster.core.execution import ExecuteInProcessResult
 from dagster.utils import load_yaml_from_globs
 from dagster.utils.merger import deep_merge_dicts
 from dagster_utils.resources.sam import Sam
@@ -59,7 +59,7 @@ def run_pipeline(
         job: JobDefinition,
         config_name: str,
         extra_config: dict[str, Any] = {},
-) -> InProcessGraphResult:
+) -> ExecuteInProcessResult:
     config_dict = load_yaml_from_globs(
         config_path(config_name)
     )
