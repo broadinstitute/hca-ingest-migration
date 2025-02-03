@@ -23,8 +23,8 @@ jobs:
           export_default_credentials: true
       - name: Setup GCR auth
         run: gcloud auth configure-docker --quiet us.gcr.io,us-east4-docker.pkg.dev
-      # TODO upgrade scala?
-      - uses: olafurpg/setup-scala@v10
+      - uses: sbt/setup-sbt@v1
+      - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '8'
