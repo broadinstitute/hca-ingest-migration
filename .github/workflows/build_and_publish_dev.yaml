@@ -23,7 +23,7 @@ jobs:
           export_default_credentials: true
       - name: Setup GCR auth
         run: gcloud auth configure-docker --quiet us.gcr.io,us-east4-docker.pkg.dev
-      - uses: sbt/setup-sbt@v1
+      - uses: sbt/setup-sbt@96cf3f09dc501acdad7807fffe97dba9fa0709be # v1
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
