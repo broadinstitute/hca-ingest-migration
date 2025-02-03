@@ -6,8 +6,8 @@ jobs:
   main-ci:
     runs-on: ubuntu-latest
     steps:
-      # TODO upgrade checkout?
-      - uses: actions/checkout@v2
+      # TODO upgrade checkout for all actions
+      - uses: actions/checkout@v4
         # Needed by sonar to get the git history for the branch the PR will be merged into.
         with:
           fetch-depth: 0
