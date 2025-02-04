@@ -19,6 +19,8 @@ jobs:
         with:
           # formerly known as `service_account_key`
           credentials_json: '${{ secrets.GCP_TEST_KEY }}'
+        env:
+          GCP_TEST_KEY: '${{ secrets.GCP_TEST_KEY }}'
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v2.0.0'
         with:
