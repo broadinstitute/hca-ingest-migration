@@ -20,9 +20,10 @@ jobs:
     - id: 'auth'
       uses: 'google-github-actions/auth@v2'
       with:
-        credentials_json: '${{ secrets.GCP_TEST_KEY }}'
-      env:
-        GCP_TEST_KEY: '${{ secrets.GCP_TEST_KEY }}'
+        # This is the service account key for the hca-test-runner 1d445
+        credentials_json: '${{ secrets.HCA_GCP_TEST_SA_KEY }}'
+#      env:
+#        GCP_TEST_KEY: '${{ secrets.GCP_TEST_KEY }}'
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v2.0.0'
       with:
