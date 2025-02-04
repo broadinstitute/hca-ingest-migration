@@ -61,9 +61,6 @@ snapshot = "hca_manage.snapshot:run"
 soft_delete = "hca_manage.soft_delete:run"
 job = "hca_manage.job:fetch_job_info"
 
-[tool.poetry.requires-plugins]
-poetry-plugin-export = ">=1.8"
-
 [build-system]
 requires = ["poetry-core>=2.0"]
 build-backend = "poetry.core.masonry.api"
