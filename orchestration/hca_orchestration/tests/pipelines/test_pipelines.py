@@ -11,6 +11,9 @@ from dagster import (
     ResourceDefinition,
     file_relative_path,
 )
+
+# isort: split
+
 # TODO looks like this moved
 # from dagster.core.execution import ExecuteInProcessResult
 from dagster.utils import load_yaml_from_globs
@@ -83,7 +86,8 @@ def run_pipeline(
 @patch("hca_manage.bq_managers.DuplicatesManager.get_all_table_names")
 @patch("hca_manage.bq_managers.DanglingFileRefManager.get_rows")
 @patch("hca_manage.bq_managers.CountsManager.get_rows")
-@pytest.mark.skip(reason="This test is failing due to I believe an issue with an early version of the dagster class ExecuteInProcessResult")
+@pytest.mark.skip(reason="This test is failing due to I believe an issue with an early version "
+                         "of the dagster class ExecuteInProcessResult")
 def test_load_hca_noop_resources(*mocks):
     data_repo_service = Mock(hca_orchestration.resources.data_repo_service.DataRepoService)
     data_repo_service.get_dataset = Mock(return_value=TdrDataset("fake", "fake", "fake", "fake", "fake"))
@@ -107,7 +111,8 @@ def test_load_hca_noop_resources(*mocks):
 
     assert result.success
     # TODO fix this test
-    # FAILED hca_orchestration/tests/pipelines/test_pipelines.py::test_load_hca_noop_resources - AttributeError: 'HcaScratchDatasetName' object has no attribute 'result'
+    # FAILED hca_orchestration/tests/pipelines/test_pipelines.py::test_load_hca_noop_resources -
+    # AttributeError: 'HcaScratchDatasetName' object has no attribute 'result'
     scratch_dataset_name = result.output_for_node("create_scratch_dataset").output_value("result")
     assert scratch_dataset_name.startswith(
         "fake_bq_project.testing_dataset_prefix_fake"), "staging dataset should start with load tag prefix"
