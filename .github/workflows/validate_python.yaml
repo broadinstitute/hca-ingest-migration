@@ -20,7 +20,6 @@ jobs:
     - id: 'auth'
       uses: 'google-github-actions/auth@v2'
       with:
-        # formerly known as `service_account_key`
         credentials_json: '${{ secrets.GCP_TEST_KEY }}'
       env:
         GCP_TEST_KEY: '${{ secrets.GCP_TEST_KEY }}'
@@ -38,7 +37,7 @@ jobs:
       with:
         version: 2.0.1
     - name: Cache dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       env:
         cache-name: cache-poetry-v2
       with:
