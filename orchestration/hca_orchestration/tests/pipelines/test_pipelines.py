@@ -99,7 +99,7 @@ def test_load_hca_noop_resources(*mocks):
     result = run_pipeline(job, config_name="test_load_hca_noop_resources.yaml")
 
     assert result.success
-    scratch_dataset_name = result.result_for_node("create_scratch_dataset").output_value("result")
+    scratch_dataset_name = result.output_for_node("create_scratch_dataset").output_value("result")
     assert scratch_dataset_name.startswith(
         "fake_bq_project.testing_dataset_prefix_fake"), "staging dataset should start with load tag prefix"
 
