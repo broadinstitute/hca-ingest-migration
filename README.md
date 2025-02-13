@@ -12,6 +12,8 @@ system design information.
   * If you are using the provided Docker Compose dev env use the follow command to invoke it: `docker compose run -w /hca-ingest app bash`
     * _Note that if you are not already logged in to gcloud, you will need to do so before running \
       the docker compose command, as this will pull the latest image from Artifact Registry._
+    * _If this is the first time you've pulled from this repo with docker you may need to run `gcloud auth configure-docker`_
+    * _you may also need to add "us-east4-docker.pkg.dev" to your docker config.json `~/.docker/config.json`_
 * Authenticate with gcloud using your Broad credentials `gcloud auth login`
 * Then set up your billing project `gcloud config set project PROJECT_ID`
   * For prod this is `mystical-slate-284720`
