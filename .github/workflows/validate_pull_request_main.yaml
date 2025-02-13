@@ -49,9 +49,13 @@ jobs:
       - name: Install dependencies
         run: poetry install
         working-directory: ${{ github.workspace }}/orchestration
-      - uses: olafurpg/setup-scala@v10
+      - uses: sbt/setup-sbt@v1
+      - uses: actions/setup-java@v4
         with:
-          java-version: graalvm@20.0.0
+          distribution: 'temurin'
+          java-version: '8'
+          # commit-${{ github.sha }}-job-${{ github.run_id }}-sbt-cache
+          cache: 'sbt'
       - name: Check Scala formatting
         run: sbt scalafmtCheckAll
       - name: Scala Compile
