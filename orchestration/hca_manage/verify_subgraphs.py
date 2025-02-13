@@ -94,7 +94,7 @@ def verify_single_project(bq_project: str, dataset: str, snapshot: bool,
             assert row[
                 "project_id"] == project_id, f"Dataset should only contain links rows for single project [project_id={project_id}]"
 
-    verify_all_subgraphs_in_dataset(links_rows, bq_project, dataset, bigquery_service) # type: ignore
+    verify_all_subgraphs_in_dataset(links_rows, bq_project, dataset, bigquery_service)  # type: ignore
 
     logging.info(
         f"✅ Subgraphs verified [project_id = {project_id}, dataset = {dataset}, bq_project = {bq_project}, num_links = {len(links_rows)}]")
