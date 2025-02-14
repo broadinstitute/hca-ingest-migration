@@ -3,7 +3,7 @@ Abstraction over the raw bigquery client. All operations automatically return th
 """
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, cast
 
 from dagster_utils.contrib.google import GsBucketWithPrefix
 from google.cloud import bigquery
@@ -14,7 +14,6 @@ from google.cloud.bigquery import (
     WriteDisposition,
 )
 from google.cloud.bigquery.table import RowIterator
-
 from hca_orchestration.models.hca_dataset import TdrDataset
 
 
@@ -123,7 +122,7 @@ class BigQueryService:
             bigquery_dataset: str,
             bigquery_project: str,
             output_format: bigquery.DestinationFormat = bigquery.DestinationFormat.NEWLINE_DELIMITED_JSON
-    ) -> bigquery.ExtractJob:
+    ) -> bigquery.ExtractJob:  # type: ignore
         """
         Extracts the contents of a BQ table to the supplied out path
         """
@@ -139,7 +138,7 @@ class BigQueryService:
             project=bigquery_project
         )
 
-        return extract_job.result()
+        return cast(bigquery.ExtractJob, extract_job).result()  # type: ignore
 
     def get_num_rows_in_table(
             self,
@@ -222,11 +221,12 @@ class BigQueryService:
             format='JSON',
             overwrite=true
         ) AS
-        SELECT sf.{table_name}_id, sf.version, dlh.file_id, sf.content, sf.descriptor FROM `{target_hca_dataset.project_id}.datarepo_{target_hca_dataset.dataset_name}.{table_name}` sf
+        SELECT sf.{table_name}_id, sf.version, dlh.file_id, sf.content, sf.descriptor 
+        FROM `{target_hca_dataset.project_id}.datarepo_{target_hca_dataset.dataset_name}.{table_name}` sf
         LEFT JOIN  `{target_hca_dataset.project_id}.datarepo_{target_hca_dataset.dataset_name}.datarepo_load_history` dlh
             ON dlh.state = 'succeeded' AND JSON_EXTRACT_SCALAR(sf.descriptor, '$.crc32c') = dlh.checksum_crc32c
             AND '/v1/' || JSON_EXTRACT_SCALAR(sf.descriptor, '$.file_id') || '/' || JSON_EXTRACT_SCALAR(sf.descriptor, '$.crc32c') || '/' || JSON_EXTRACT_SCALAR(sf.descriptor, '$.file_name') = dlh.target_path
-        """
+        """  # noqa: E501
 
         return self.run_query(
             query,
