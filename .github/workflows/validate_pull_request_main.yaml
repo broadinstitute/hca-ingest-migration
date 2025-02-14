@@ -54,8 +54,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '8'
-          # commit-${{ github.sha }}-job-${{ github.run_id }}-sbt-cache
-          cache: 'sbt'
+          # sbt
+          cache: 'commit-${{ github.sha }}-job-${{ github.run_id }}-sbt-cache'
       - name: Check Scala formatting
         run: sbt scalafmtCheckAll
       - name: Scala Compile
