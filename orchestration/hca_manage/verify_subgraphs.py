@@ -8,7 +8,7 @@ import logging
 from data_repo_client import SnapshotModel
 from google.cloud.bigquery import ArrayQueryParameter, Client
 from google.cloud.bigquery.table import RowIterator
-from hca_manage.common import (data_repo_host, get_api_client, setup_cli_logging_format)
+from hca_manage.common import data_repo_host, get_api_client, setup_cli_logging_format
 from hca_orchestration.contrib.bigquery import BigQueryService
 from hca_orchestration.contrib.data_repo.data_repo_service import DataRepoService
 from hca_orchestration.models.entities import (

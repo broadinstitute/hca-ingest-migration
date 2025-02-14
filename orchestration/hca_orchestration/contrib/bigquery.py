@@ -121,8 +121,8 @@ class BigQueryService:
             out_path: str,
             bigquery_dataset: str,
             bigquery_project: str,
-            output_format: \
-            bigquery.DestinationFormat = bigquery.DestinationFormat.NEWLINE_DELIMITED_JSON # type: ignore
+            output_format:
+            bigquery.DestinationFormat = bigquery.DestinationFormat.NEWLINE_DELIMITED_JSON  # type: ignore
     ) -> bigquery.ExtractJob:
         """
         Extracts the contents of a BQ table to the supplied out path
@@ -222,7 +222,7 @@ class BigQueryService:
             format='JSON',
             overwrite=true
         ) AS
-        SELECT sf.{table_name}_id, sf.version, dlh.file_id, sf.content, sf.descriptor 
+        SELECT sf.{table_name}_id, sf.version, dlh.file_id, sf.content, sf.descriptor
         FROM `{target_hca_dataset.project_id}.datarepo_{target_hca_dataset.dataset_name}.{table_name}` sf
         LEFT JOIN  `{target_hca_dataset.project_id}.datarepo_{target_hca_dataset.dataset_name}.datarepo_load_history` dlh
             ON dlh.state = 'succeeded' AND JSON_EXTRACT_SCALAR(sf.descriptor, '$.crc32c') = dlh.checksum_crc32c
