@@ -121,7 +121,7 @@ class BigQueryService:
             out_path: str,
             bigquery_dataset: str,
             bigquery_project: str,
-            output_format: bigquery.DestinationFormat = bigquery.DestinationFormat.NEWLINE_DELIMITED_JSON # noqa: E501 # type: ignore
+            output_format: bigquery.DestinationFormat = bigquery.DestinationFormat.NEWLINE_DELIMITED_JSON  # noqa: E501 # type: ignore
     ) -> bigquery.ExtractJob:
         """
         Extracts the contents of a BQ table to the supplied out path
@@ -226,7 +226,7 @@ class BigQueryService:
         LEFT JOIN  `{target_hca_dataset.project_id}.datarepo_{target_hca_dataset.dataset_name}.datarepo_load_history` dlh
             ON dlh.state = 'succeeded' AND JSON_EXTRACT_SCALAR(sf.descriptor, '$.crc32c') = dlh.checksum_crc32c
             AND '/v1/' || JSON_EXTRACT_SCALAR(sf.descriptor, '$.file_id') || '/' || JSON_EXTRACT_SCALAR(sf.descriptor, '$.crc32c') || '/' || JSON_EXTRACT_SCALAR(sf.descriptor, '$.file_name') = dlh.target_path
-        """ # noqa: E501
+        """  # noqa: E501
 
         return self.run_query(
             query,
