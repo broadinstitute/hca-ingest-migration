@@ -121,8 +121,9 @@ class BigQueryService:
             out_path: str,
             bigquery_dataset: str,
             bigquery_project: str,
-            output_format: bigquery.DestinationFormat = bigquery.DestinationFormat.NEWLINE_DELIMITED_JSON
-    ) -> bigquery.ExtractJob:  # type: ignore
+            output_format: \
+            bigquery.DestinationFormat = bigquery.DestinationFormat.NEWLINE_DELIMITED_JSON # type: ignore
+    ) -> bigquery.ExtractJob:
         """
         Extracts the contents of a BQ table to the supplied out path
         """
