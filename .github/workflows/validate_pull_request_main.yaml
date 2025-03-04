@@ -26,10 +26,10 @@ jobs:
         with:
           version: '>= 416.0.0'
           project_id: '${{ secrets.DEV_PROJECT_ID }}'
-      - name: Set up Python 3.9 for dataflow tests
+      - name: Set up Python 3.10 for dataflow tests
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: "3.10"
       - name: Install Poetry
         uses: snok/install-poetry@v1
         with:
