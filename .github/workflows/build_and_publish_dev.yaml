@@ -42,7 +42,7 @@ jobs:
           buildArgs: SENTRY_DSN=${{ secrets.HCA_DAGSTER_SENTRY_DSN }}
           context: ./orchestration
           push: true
-          tags: us.gcr.io/broad-dsp-gcr-public/monster-hca-dagster:${{steps.get-artifact-slug.outputs.slug}}, us.gcr.io/broad-dsp-gcr-public/monster-hca-dagster:dev-2-appsec39-dagster013
+          tags: us.gcr.io/broad-dsp-gcr-public/monster-hca-dagster:${{steps.get-artifact-slug.outputs.slug}}, us.gcr.io/broad-dsp-gcr-public/monster-hca-dagster:dev-2-appsec310-dagster014
 # TODO reinstate the compose dev env when we have a stable orchestration image
 #      - name: Push Compose Dev Env Docker image
 #        uses: docker/build-push-action@v6
