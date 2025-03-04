@@ -3412,7 +3412,7 @@ version = "57.5.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 optional = false
 python-versions = ">=3.6"
-groups = ["dev"]
+groups = ["main", "dev"]
 files = [
     {file = "setuptools-57.5.0-py3-none-any.whl", hash = "sha256:60d78588f15b048f86e35cdab73003d8b21dd45108ee61a6693881a427f22073"},
     {file = "setuptools-57.5.0.tar.gz", hash = "sha256:d9d3266d50f59c6967b9312844470babbdb26304fe740833a5f8d89829ba3a24"},
@@ -4366,4 +4366,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.1"
 python-versions = "~3.10"
-content-hash = "64c71ed899fb2f29be3084dbf615895bb4ca6026d99e0c988cbc7cd070dcdfd7"
+content-hash = "9354b64c0b345558300be523a258f81751bb7c8f49cfb4c13670295337f7026b"
