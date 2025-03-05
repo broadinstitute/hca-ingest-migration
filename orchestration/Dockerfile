@@ -2,9 +2,7 @@
 
 # base python image, blessed by AppSec
 # FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.12-debian AS base
-# using 3.9 for now as many of the old Dagster dependencies are EOL.
-# I'll upgrade to 3.12 once I've updated to Dagster latest
-FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.9-debian AS base
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.10-debian AS base
 
 ENV PYTHONFAULTHANDLER=1 \
   PYTHONUNBUFFERED=1 \
@@ -44,7 +42,7 @@ RUN mkdir /logs \
 # Cleanup extra files - though if we are using a multi-stage build, this is not necessary... right?
 RUN  rm -rf /var/lib/apt/lists/* \
     &&  rm -rf /root/.cache  \
-    &&  rm -rf /usr/lib/python3.9 \
+    &&  rm -rf /usr/lib/python3.10 \
     &&  rm -rf /usr/lib/x86_64-linux-gnu/guile
 
 # copy the user code into the blessed final image with minimal footprint
