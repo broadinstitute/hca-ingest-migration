@@ -6,7 +6,7 @@ from dagster import Partition
 from dagster_utils.typing import DagsterObjectConfigSchema
 
 
-def run_config_for_cut_snapshot_partition(partition: Partition) -> DagsterObjectConfigSchema:
+def run_config_for_cut_snapshot_partition(partition: Partition[str]) -> DagsterObjectConfigSchema:  # type: ignore
     run_config = {
         "solids": {
             "add_steward": {

@@ -1,29 +1,39 @@
 import logging
 import os
 import uuid
-from dagster import Partition, PartitionSetDefinition
+from typing import Any, Callable, Optional, TypeVar
 
+from dagster import Partition, PartitionSetDefinition
 from google.cloud.storage import Client
-from typing import Callable, Any, TypeVar, Optional
 
 T = TypeVar("T")
 
 
 def configure_partitions_for_pipeline(pipeline_name: str, config_fn: Callable[[
-                                      Partition[T]], Any]) -> list[PartitionSetDefinition]:
+                                      Partition[T]], Any]) -> list[PartitionSetDefinition[Any]]:
     partitions_path = os.environ.get("PARTITIONS_BUCKET", "")
     if not partitions_path:
         logging.warning(f"PARTITIONS_BUCKET not set, skipping partitioning for pipeline {pipeline_name}")
         return []
 
-    result = gs_csv_partition_reader(partitions_path, pipeline_name, Client(),
-                                     config_fn)
+    result: list[PartitionSetDefinition[Any]] = gs_csv_partition_reader(
+        partitions_path,
+        pipeline_name,
+        Client(),
+        config_fn
+    )
+
     logging.warning(f"Found partitions for {pipeline_name}")
     return result
 
 
-def gs_csv_partition_reader(gs_partitions_bucket_name: str, pipeline_name: str, gs_client: Client,
-                            run_config_fn_for_partition: Callable[[Partition[T]], Any]) -> list[PartitionSetDefinition]:
+def gs_csv_partition_reader(gs_partitions_bucket_name: str,
+                            pipeline_name: str,
+                            gs_client: Client,
+                            run_config_fn_for_partition: Callable[
+                                [Partition[T]],
+                                Any
+                            ]) -> (list)[PartitionSetDefinition[Any]]:
     """
     Parses any csv files at the given GS path, interpreting each line as a separate
     partition.
