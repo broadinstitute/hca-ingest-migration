@@ -3,7 +3,6 @@ from typing import Any, Iterator
 
 from dagster import (
     AssetMaterialization,
-    EventMetadataEntry,
     Failure,
     Field,
     MetadataValue,

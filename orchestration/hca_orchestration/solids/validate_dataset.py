@@ -11,7 +11,6 @@ from dagster import (
     op,
 )
 from dagster.core.execution.context.compute import AbstractComputeExecutionContext
-
 from hca_manage.check import CheckManager
 from hca_manage.common import ProblemCount
 from hca_manage.verify_subgraphs import verify_all_subgraphs_in_dataset
