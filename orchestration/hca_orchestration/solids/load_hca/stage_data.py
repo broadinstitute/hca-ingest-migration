@@ -43,7 +43,7 @@ def clear_dir(bucket: str, prefix: str, gcs: Client) -> int:
     },
     input_defs=[InputDefinition("start", Nothing)],
 )
-def pre_process_metadata(context: AbstractComputeExecutionContext) -> Nothing:
+def pre_process_metadata(context: AbstractComputeExecutionContext) -> Nothing: # type: ignore
     """
     Runs the Beam hca transformation pipeline flow over the given input prefix
     """

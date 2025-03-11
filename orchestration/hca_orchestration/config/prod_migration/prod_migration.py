@@ -5,12 +5,12 @@ from dagster.utils import load_yaml_from_path
 from dagster_utils.typing import DagsterObjectConfigSchema
 
 
-def run_config_per_project_snapshot_job(partition: Partition) -> DagsterObjectConfigSchema:
+def run_config_per_project_snapshot_job(partition: Partition[str]) -> DagsterObjectConfigSchema:
     path = file_relative_path(
         __file__, os.path.join("./run_config", "per_project_snapshot.yaml")
     )
     # jsdcp:ignore-start
-    run_config: DagsterObjectConfigSchema = load_yaml_from_path(path)
+    run_config: DagsterObjectConfigSchema = load_yaml_from_path(path) # type: ignore
 
     # we bake the release tag into the uploaded partitions csv (i.e, <uuid>,<release tag>)
     project_id, release_tag = partition.value.split(',')
