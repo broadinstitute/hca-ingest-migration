@@ -1,11 +1,10 @@
 import logging
 import os
 import uuid
-from typing import Callable, Any, TypeVar, Optional
+from typing import Any, Callable, Optional, TypeVar
+
 from dagster import Partition, PartitionSetDefinition
-
 from google.cloud.storage import Client
-
 
 T = TypeVar("T")
 
