@@ -1,4 +1,4 @@
-from dagster import resource, InitResourceContext
+from dagster import InitResourceContext, resource
 
 
 @resource

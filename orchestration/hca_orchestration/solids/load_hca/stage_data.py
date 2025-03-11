@@ -1,12 +1,11 @@
-from dagster import solid, InputDefinition, Nothing, String, Failure
+from dagster import Failure, InputDefinition, Nothing, String, solid
 from dagster.core.execution.context.compute import AbstractComputeExecutionContext
 from dagster_utils.resources.beam.beam_runner import BeamRunner
 from google.cloud.bigquery import Dataset
 from google.cloud.storage.client import Client
-
 from hca_orchestration.contrib.dagster import short_run_id
-from hca_orchestration.support.typing import HcaScratchDatasetName
 from hca_orchestration.models.hca_dataset import TdrDataset
+from hca_orchestration.support.typing import HcaScratchDatasetName
 
 
 @solid(
@@ -43,7 +42,7 @@ def clear_dir(bucket: str, prefix: str, gcs: Client) -> int:
     },
     input_defs=[InputDefinition("start", Nothing)],
 )
-def pre_process_metadata(context: AbstractComputeExecutionContext) -> Nothing: # type: ignore
+def pre_process_metadata(context: AbstractComputeExecutionContext) -> Nothing:  # type: ignore
     """
     Runs the Beam hca transformation pipeline flow over the given input prefix
     """

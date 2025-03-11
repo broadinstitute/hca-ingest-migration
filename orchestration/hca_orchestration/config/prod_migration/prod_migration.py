@@ -10,7 +10,7 @@ def run_config_per_project_snapshot_job(partition: Partition[str]) -> DagsterObj
         __file__, os.path.join("./run_config", "per_project_snapshot.yaml")
     )
     # jsdcp:ignore-start
-    run_config: DagsterObjectConfigSchema = load_yaml_from_path(path) # type: ignore
+    run_config: DagsterObjectConfigSchema = load_yaml_from_path(path)  # type: ignore
 
     # we bake the release tag into the uploaded partitions csv (i.e, <uuid>,<release tag>)
     project_id, release_tag = partition.value.split(',')
