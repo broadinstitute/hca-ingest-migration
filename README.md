@@ -10,6 +10,7 @@ system design information.
   * If you are running in a local virtual environment go ahead and set that up. Note that this project uses Python 3.10
     * Also install the [gcloud cloud command-line tool](https://cloud.google.com/sdk/docs/install) if you've not already done so.
   * If you are using the provided Docker Compose dev env use the follow command to invoke it: `docker compose run -w /hca-ingest app bash`
+  *  TODO - Bobbie - look into `docker compose down && docker compose up --build` vs the above command - might be better?
     * _Note that if you are not already logged in to gcloud, you will need to do so before running \
       the docker compose command, as this will pull the latest image from Artifact Registry._
     * _If this is the first time you've pulled from this repo with docker you may need to run `gcloud auth configure-docker`_
