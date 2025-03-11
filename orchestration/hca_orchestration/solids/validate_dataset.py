@@ -90,14 +90,18 @@ def validate_copied_dataset(context: AbstractComputeExecutionContext) -> Iterato
         raise Failure(f"Dataset {target_hca_dataset.dataset_name} failed validation")
 
     yield AssetMaterialization(
-        asset_key=AssetKey([hca_project_config.source_hca_project_id, target_hca_dataset.project_id,
-                            target_hca_dataset.dataset_name, target_hca_dataset.dataset_id]),
+        asset_key=AssetKey([
+            hca_project_config.source_hca_project_id,
+            target_hca_dataset.project_id,
+            target_hca_dataset.dataset_name,
+            target_hca_dataset.dataset_id
+        ]),
         partition=f"{hca_project_config.source_hca_project_id}",
-        tags={
-            "dataset_id": target_hca_dataset.dataset_id,
-            "project_id": target_hca_dataset.project_id,
-            "dataset_name": target_hca_dataset.dataset_name,
-            "source_hca_project_id": hca_project_config.source_hca_project_id
+        metadata={
+            "dataset_id": MetadataValue.text(target_hca_dataset.dataset_id),
+            "project_id": MetadataValue.text(target_hca_dataset.project_id),
+            "dataset_name": MetadataValue.text(target_hca_dataset.dataset_name),
+            "source_hca_project_id": MetadataValue.text(hca_project_config.source_hca_project_id)
         }
     )
 
