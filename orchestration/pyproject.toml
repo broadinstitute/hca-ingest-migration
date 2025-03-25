@@ -11,7 +11,7 @@ authors = ["Barbara Hill <bhill@broadinstitute.org>"]
 # updated to 3.12 when we upgrade to Dagster latest
 python = "~3.10"
 argo-workflows = "^5.0.0"
-broad-dagster-utils = "2.0.0a5"
+broad-dagster-utils = "2.0.0a6"
 cached-property = "^1.5.2"
 cffi = "1.16.0"
 # https://github.com/dagster-io/dagster/blob/master/MIGRATION.md#migrating-to-10

@@ -267,25 +267,26 @@ css = ["tinycss2 (>=1.1.0,<1.5)"]
 
 [[package]]
 name = "broad-dagster-utils"
-version = "2.0.0a5"
+version = "2.0.0a6"
 description = "Common utilities and objects for building Dagster pipelines"
 optional = false
 python-versions = "<3.11,>=3.10"
 groups = ["main"]
 files = [
-    {file = "broad_dagster_utils-2.0.0a5-py3-none-any.whl", hash = "sha256:b38fb76c7c162cf591efc793cc5013226eda882b17a6be988a8e7fab09039f02"},
-    {file = "broad_dagster_utils-2.0.0a5.tar.gz", hash = "sha256:3c57bad19538e8ac06869465ae63e3c887e9b7f2ba805670155c5a8886c4f621"},
+    {file = "broad_dagster_utils-2.0.0a6-py3-none-any.whl", hash = "sha256:799c30e40535a304db03c48382c660369bc61443e60ba2cfc7d8d73413951096"},
+    {file = "broad_dagster_utils-2.0.0a6.tar.gz", hash = "sha256:372414b89566bebdbd4aecaf634a6271cffabce193d858d0d2faf42114f002b1"},
 ]
 
 [package.dependencies]
 argo-workflows = ">=5.0.0,<6.0.0"
 dagster = ">=0.15.0,<0.16.0"
 data-repo-client = ">=1.134.0,<2.0.0"
+distlib = "0.3.9"
 google-cloud-bigquery = "<3"
 google-cloud-storage = ">=1.38.0,<2.0.0"
 pendulum = "2.1.2"
 PyYAML = ">=6.0.2,<7.0.0"
-slackclient = ">=2.9.3,<3.0.0"
+slack_sdk = ">=3.18.0,<4.0.0"
 sqlalchemy = ">=1.4.54,<2.0.0"
 
 [[package]]
@@ -778,7 +779,7 @@ version = "0.3.9"
 description = "Distribution utilities"
 optional = false
 python-versions = "*"
-groups = ["dev"]
+groups = ["main", "dev"]
 files = [
     {file = "distlib-0.3.9-py2.py3-none-any.whl", hash = "sha256:47f8c22fd27c27e25a65601af709b38e4f0a45ea4fc2e710f65755fa8caaaf87"},
     {file = "distlib-0.3.9.tar.gz", hash = "sha256:a60f20dea646b8a33f3e7772f74dc0b2d0772d2837ee1342a00645c81edf9403"},
@@ -3386,24 +3387,6 @@ files = [
 optional = ["SQLAlchemy (>=1.4,<3)", "aiodns (>1.0)", "aiohttp (>=3.7.3,<4)", "boto3 (<=2)", "websocket-client (>=1,<2)", "websockets (>=9.1,<15)"]
 
 [[package]]
-name = "slackclient"
-version = "2.9.4"
-description = "Slack API clients for Web API and RTM API (Legacy) - Please use https://pypi.org/project/slack-sdk/ instead."
-optional = false
-python-versions = ">=3.6.0"
-groups = ["main"]
-files = [
-    {file = "slackclient-2.9.4-py2.py3-none-any.whl", hash = "sha256:a8cab9146795e23d66a03473b80dd23df8c500829dfa9d06b3e3d5aec0a2b293"},
-    {file = "slackclient-2.9.4.tar.gz", hash = "sha256:ab79fefb5412d0595bc01d2f195a787597f2a617b6766562932ab9ffbe5cb173"},
-]
-
-[package.dependencies]
-aiohttp = ">3.5.2,<4.0.0"
-
-[package.extras]
-optional = ["aiodns (>1.0)"]
-
-[[package]]
 name = "sniffio"
 version = "1.3.1"
 description = "Sniff out which async library your code is running under"
@@ -4228,4 +4211,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.1"
 python-versions = "~3.10"
-content-hash = "1f92fefe87627b97f8701c2c2999c3a66b65e25bdb9af14ffa4c6e8facb7cc11"
+content-hash = "36e35f588a21869f997044390ad801769a022051a9ece0f94caf86d1d12ae71c"
