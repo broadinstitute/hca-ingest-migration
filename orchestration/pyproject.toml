@@ -1,6 +1,7 @@
 [tool.poetry]
 name = "hca_orchestration"
-version = "0.3.0"
+# TODO set this to 2 when upgraded to Dagster 1.0+ then go to minor revisions
+version = "0.4.0"
 description = "HCA ingest orchestration - a collection of scripts to manage HCA ingest"
 authors = ["Barbara Hill <bhill@broadinstitute.org>"]
 # update the repository when we move the official repo
@@ -10,15 +11,15 @@ authors = ["Barbara Hill <bhill@broadinstitute.org>"]
 # updated to 3.12 when we upgrade to Dagster latest
 python = "~3.10"
 argo-workflows = "^5.0.0"
-broad-dagster-utils = "2.0.0a4"
+broad-dagster-utils = "2.0.0a6"
 cached-property = "^1.5.2"
 cffi = "1.16.0"
 # https://github.com/dagster-io/dagster/blob/master/MIGRATION.md#migrating-to-10
-dagster = "0.14.0"
-dagster-gcp = "0.14.0"
-dagster-k8s = "0.14.0"
-dagster-postgres = "0.14.0"
-dagster-slack = "0.14.0"
+dagster = "0.15.0"
+dagster-gcp = "0.15.0"
+dagster-k8s = "0.15.0"
+dagster-postgres = "0.15.0"
+dagster-slack = "0.15.0"
 # TODO this should be updated
 data-repo-client = "^1.134.0"
 # hca-orchestration depends on dagster-gcp (0.14.0) which depends on google-cloud-bigquery (>=1.19,<3)
@@ -50,7 +51,7 @@ aiohttp = "3.9.4"
 
 [tool.poetry.group.dev.dependencies]
 autopep8 = "^1.5.5"
-dagit = "0.14.0"
+dagit = "0.15.0"
 flake8 = "^3.8.4"
 mypy = "^0.812"
 pdbpp = "^0.10.2"
