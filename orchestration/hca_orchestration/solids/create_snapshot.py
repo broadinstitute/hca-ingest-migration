@@ -3,9 +3,9 @@ from typing import Any, Iterator
 
 from dagster import (
     AssetMaterialization,
-    EventMetadataEntry,
     Failure,
     Field,
+    MetadataValue,
     Output,
     OutputDefinition,
     Permissive,
@@ -64,25 +64,15 @@ def get_completed_snapshot_info(context: AbstractComputeExecutionContext, job_id
     yield AssetMaterialization(
         asset_key=snapshot_info_dict['id'],
         description="Dataset snapshot created in the data repo",
-        metadata_entries=[
-            EventMetadataEntry.text(
-                context.resources.snapshot_config.dataset_name,
-                "dataset_name",
-                description="Dataset name in the data repo"),
-            EventMetadataEntry.text(
-                snapshot_info_dict['name'],
-                "snapshot_name",
-                description="Snapshot name in the data repo"),
-            EventMetadataEntry.text(snapshot_info_dict['id'], "snapshot_id",
-                                    description="Snapshot ID in the data repo"),
-            EventMetadataEntry.text(job_id, "job_id", description="Successful data repo job ID"),
-        ],
-        tags={
-            "snapshot_id": snapshot_info_dict['id'],
-            "data_project": snapshot_details.data_project,
-            "snapshot_name": snapshot_info_dict['name']
+        metadata={
+            "dataset_name": MetadataValue.text(context.resources.snapshot_config.dataset_name),
+            "data_project": MetadataValue.text(snapshot_details.data_project),
+            "snapshot_name": MetadataValue.text(snapshot_info_dict['name']),
+            "snapshot_id": MetadataValue.text(snapshot_info_dict['id']),
+            "job_id": MetadataValue.text(job_id)
         }
     )
+
     yield Output(snapshot_info_dict['id'])
 
 
