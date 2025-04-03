@@ -1,10 +1,7 @@
 version: v0.170.0
 dependencies:
-- name: create-secret-manager-secret
-  repository: https://broadinstitute.github.io/datarepo-helm
-  version: 0.0.8
 - name: dagster
   repository: https://dagster-io.github.io/helm
   version: 0.15.0
-digest: sha256:f975c7ad6e51a2865e992fb29c007edb809f69044d2c170f98d0e5c8844938cd
-generated: "2025-03-06T15:35:20.541807-05:00"
+digest: sha256:a13e8bcb36a9fac09f7c92101012b868210cf89ba2fd430ef171c7924f733fdd
+generated: "2025-04-03T12:07:28.988949-04:00"
