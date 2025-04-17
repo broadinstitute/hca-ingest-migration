@@ -34,7 +34,7 @@ from hca_orchestration.resources.config.scratch import scratch_config
 from hca_orchestration.resources.data_repo_service import data_repo_service
 
 
-@dg.job(resource_defs = {
+@dg.job(resource_defs={
     "slack": console_slack_client,
     "staging_area_validator": staging_area_validator,
     "gcs": google_storage_client
@@ -42,7 +42,8 @@ from hca_orchestration.resources.data_repo_service import data_repo_service
 def validate_ingress_job():
     validate_ingress_graph()
 
-@dg.job(resource_defs = {
+
+@dg.job(resource_defs={
     "beam_runner": local_beam_runner,
     "bigquery_client": bigquery_client,
     "data_repo_client": preconfigure_resource_for_mode(jade_data_repo_client, "dev"),
@@ -60,6 +61,7 @@ def validate_ingress_job():
 )
 def load_hca_job():
     load_hca()
+
 
 defs = dg.Definitions(
     jobs=[cut_project_snapshot_job("dev", "dev", "monster-dev@dev.test.firecloud.org"),
