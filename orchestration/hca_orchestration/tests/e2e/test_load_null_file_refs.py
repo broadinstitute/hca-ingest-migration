@@ -1,9 +1,9 @@
 import pytest
-from dagster import Failure
 from google.cloud.bigquery.client import Client, QueryJobConfig
-
 from hca_orchestration.repositories.local_repository import load_hca_job
-from hca_orchestration.solids.load_hca.data_files.load_data_metadata_files import NullFileIdException
+from hca_orchestration.solids.load_hca.data_files.load_data_metadata_files import (
+    NullFileIdException,
+)
 
 
 @pytest.mark.e2e

@@ -1,8 +1,6 @@
 from datetime import datetime
 import pytest
-from google.cloud.bigquery import QueryJobConfig, Client
-
-from hca_orchestration.pipelines import load_hca
+from google.cloud.bigquery import Client, QueryJobConfig
 from hca_orchestration.repositories.local_repository import load_hca_job
 
 
