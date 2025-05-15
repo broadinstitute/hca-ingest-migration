@@ -2,11 +2,11 @@
 Defines partitioning logic for the Q3 2021 dev refresh
 """
 
-from dagster import Partition
+import dagster as dg
 from dagster_utils.typing import DagsterObjectConfigSchema
 
 
-def run_config_for_cut_snapshot_partition(partition: Partition[str]) -> DagsterObjectConfigSchema:  # type: ignore
+def run_config_for_cut_snapshot_partition(partition_key:str) -> DagsterObjectConfigSchema:  # type: ignore
     run_config = {
         "solids": {
             "add_steward": {
@@ -18,7 +18,7 @@ def run_config_for_cut_snapshot_partition(partition: Partition[str]) -> DagsterO
         "resources": {
             "snapshot_config": {
                 "config": {
-                    "source_hca_project_id": partition.value,
+                    "source_hca_project_id": partition_key,
                     "managed_access": False,
                 }
             }

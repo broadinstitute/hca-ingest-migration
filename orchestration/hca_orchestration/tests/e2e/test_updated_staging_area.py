@@ -1,9 +1,7 @@
 from datetime import datetime
-import pytest
-from dagster import execute_pipeline
-from google.cloud.bigquery import QueryJobConfig, Client
 
-from hca_orchestration.pipelines import load_hca
+import pytest
+from google.cloud.bigquery import Client, QueryJobConfig
 from hca_orchestration.repositories.local_repository import load_hca_job
 
 
@@ -18,10 +16,9 @@ def test_load_updated_staging_area(
     base_area_config["solids"]["pre_process_metadata"]["config"][
         "input_prefix"] = "gs://broad-dsp-monster-hca-dev-test-storage/integration/ebi_micro/test_data"
     job = load_hca_job()
-    execute_pipeline(
-        job,
-        run_config=load_hca_run_config
-    )
+    result = job.execute_in_process(run_config=load_hca_run_config)
+    assert result.success
+
     assert_correct_version(
         "75e7414b-3333-4dd7-8ec5-d25748b35487",
         "2020-06-16T14:35:06.273000+00:00",
@@ -32,10 +29,8 @@ def test_load_updated_staging_area(
     updated_load_hca_run_config = load_hca_run_config.copy()
     updated_load_hca_run_config["solids"]["pre_process_metadata"]["config"][
         "input_prefix"] = "gs://broad-dsp-monster-hca-dev-test-storage/integration/ebi_micro/test_data_with_updates"
-    execute_pipeline(
-        job,
-        run_config=updated_load_hca_run_config
-    )
+    result = job.execute_in_process(run_config=updated_load_hca_run_config)
+    assert result.success
 
     assert_correct_version(
         "75e7414b-3333-4dd7-8ec5-d25748b35487",

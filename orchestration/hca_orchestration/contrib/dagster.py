@@ -1,88 +1,64 @@
 import logging
 import os
 import uuid
-from typing import Any, Callable, Optional, TypeVar
-
-from dagster import Partition, PartitionSetDefinition
+import dagster as dg
+from typing import Callable, Optional
+from dagster_utils.typing import DagsterObjectConfigSchema
 from google.cloud.storage import Client
 
-T = TypeVar("T")
+# T = TypeVar("T") # TODO - remove this ?
 
-
-def configure_partitions_for_pipeline(pipeline_name: str, config_fn: Callable[[
-                                      Partition[T]], Any]) -> list[PartitionSetDefinition[Any]]:
-    partitions_path = os.environ.get("PARTITIONS_BUCKET", "")
-    if not partitions_path:
-        logging.warning(f"PARTITIONS_BUCKET not set, skipping partitioning for pipeline {pipeline_name}")
-        return []
-
-    result: list[PartitionSetDefinition[Any]] = gs_csv_partition_reader(
-        partitions_path,
-        pipeline_name,
-        Client(),
-        config_fn
-    )
-
-    logging.warning(f"Found partitions for {pipeline_name}")
-    return result
-
-
-def gs_csv_partition_reader(gs_partitions_bucket_name: str,
-                            pipeline_name: str,
-                            gs_client: Client,
-                            run_config_fn_for_partition: Callable[
-                                [Partition[T]],
-                                Any
-                            ]) -> (list)[PartitionSetDefinition[Any]]:
+def get_partition_keys_from_gcs(gs_partitions_bucket_name: str, pipeline_name: str, gs_client: Client,
+                                run_config_fn_for_partition: Callable[[str], DagsterObjectConfigSchema]) -> list[str]:
     """
-    Parses any csv files at the given GS path, interpreting each line as a separate
-    partition.
+    Reads partition keys from CSV files in a GCS bucket, interpreting each line as a separate partition.
 
-    Files must end with a ".csv" suffix; the filename prefix becomes the name
-    of the partition set. For example:
+    Files must end with a ".csv" extension; the filename prefix becomes the name of the partition.
+    For example:
 
     foo_partitions.csv
 
-    will create a partition set named `foo_partitions`
-    :param gs_partition_csv_path: Path to the partition set files
-    :param pipeline_name: Name of the pipeline to which the partition set applies
-    :param gs_client: GS storage client
-    :param run_config_fn_for_partition: Function that will render a valid run config for the partitions
-    :return: Set of partitions
+    will create a partition named "foo_partitions"
+    :param gs_partitions_bucket_name: path to the GCS bucket with the partition files
+    :param pipeline_name: name of the pipeline to which the partitions belong
+    :param gs_client: Google Cloud Storage client
+    :param run_config_fn_for_partition: function to generate run config for each partition
+    :return: list of partition keys
     """
     blobs = gs_client.list_blobs(gs_partitions_bucket_name, prefix=pipeline_name)
-    partition_sets = []
+    partition_keys = []
 
     for blob in blobs:
         if not blob.name.endswith(".csv"):
             logging.info(f"Blob at {blob.name} is not a CSV, ignoring.")
             continue
 
-        with blob.open("r") as parition_file_handle:
-            partitions = [
-                Partition(staging_path.strip())
-                for staging_path in parition_file_handle.readlines()
-            ]
-            partition_set_id = f"{pipeline_name}_{blob.name.split('/')[-1].split('.csv')[0]}"
+        with blob.open("r") as partition_file_handle:
+            keys = [line.strip() for line in partition_file_handle.readlines()]
+            partition_keys.extend(keys)
 
-            logging.info(f"Partition set {partition_set_id} loaded")
-            # We need to bind the staging_paths to a lambda-local var ("paths") so we return
-            # the proper state.
-            #
-            # The extra "ignoreme" is a workaround for a dagster bug where it determines whether
-            # to call your partitioning function with a datetime (if it thinks you're working with
-            # scheduling partitions) or None by looking at the number of parameters. > 1 forces
-            # it to call us in the desired "mode"
-            partition_sets.append(PartitionSetDefinition(
-                name=partition_set_id,
-                pipeline_name=pipeline_name,
-                partition_fn=lambda paths=partitions, ignoreme=None: paths,
-                run_config_fn_for_partition=run_config_fn_for_partition
-            ))
-
-    return partition_sets
+    return partition_keys
 
 
+def configure_partitions_for_pipeline(pipeline_name: str, config_fn: Callable[[str], DagsterObjectConfigSchema]) -> dg.StaticPartitionsDefinition:
+    """
+    Configures partitions for a pipeline using dg.DynamicPartitionsDefinition.
+    """
+    dynamic_partitions = dg.DynamicPartitionsDefinition(name=f"{pipeline_name}_dynamic_partitions")
+    partitions_path = os.environ.get("PARTITIONS_BUCKET", "")
+    if not partitions_path:
+        logging.warning(f"PARTITIONS_BUCKET not set, skipping partitioning for pipeline {pipeline_name}")
+        return dg.StaticPartitionsDefinition(partition_keys=[])
+
+    gs_client = Client()
+    partition_keys = get_partition_keys_from_gcs(partitions_path, pipeline_name, gs_client, config_fn)
+    logging.warning(f"Found partitions for pipeline {pipeline_name}: {partition_keys}")
+
+    # Dynamically add partition keys (partition keys replace partition sets from pre Dagster 1.0
+    dynamic_partitions.add_partitions(partition_keys)
+    return dynamic_partitions
+
+# TODO - this probably shouldn't be in here
 def short_run_id(run_id: Optional[str]) -> str:
     if not run_id:
         run_id = uuid.uuid4().hex

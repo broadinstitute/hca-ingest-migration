@@ -1,14 +1,7 @@
 import os
 
 import sentry_sdk
-from dagster import (
-    HookContext,
-    InitResourceContext,
-    Partition,
-    failure_hook,
-    graph,
-    resource,
-)
+import dagster as dg
 from dagster_utils.typing import DagsterObjectConfigSchema
 from hca_manage.validation import HcaValidator
 from hca_orchestration.solids.validate_ingress import (
@@ -25,13 +18,13 @@ if SENTRY_DSN:
 
 
 def run_config_for_validation_ingress_partition(
-    partition: Partition,
+    partition_key: str,
 ) -> DagsterObjectConfigSchema:
     return {
         "solids": {
             "pre_flight_validate": {
                 "config": {
-                    "staging_area": partition.value,
+                    "staging_area": partition_key,
                     # "total_retries": partition.value, # TODO: add this back in
                 }
             }
@@ -39,13 +32,13 @@ def run_config_for_validation_ingress_partition(
     }
 
 
-@resource
-def staging_area_validator(init_context: InitResourceContext) -> HcaValidator:
+@dg.resource
+def staging_area_validator(init_context: dg.InitResourceContext) -> HcaValidator:
     return HcaValidator()
 
 
-@failure_hook(required_resource_keys={"slack", "dagit_config"})
-def validation_failed_notification(context: HookContext) -> None:
+@dg.failure_hook(required_resource_keys={"slack", "dagit_config"})
+def validation_failed_notification(context: dg.HookContext) -> None:
     lines = (
         "Validation Ingress Failed",
         "Dagit link: "
@@ -55,7 +48,7 @@ def validation_failed_notification(context: HookContext) -> None:
     context.resources.slack.send_message(text=slack_msg_text)
 
 
-@graph
+@dg.graph
 def validate_ingress_graph() -> None:
     # pylint: disable=no-value-for-parameter
     notify_slack_of_successful_ingress_validation(pre_flight_validate())

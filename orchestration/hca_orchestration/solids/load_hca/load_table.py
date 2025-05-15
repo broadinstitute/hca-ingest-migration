@@ -25,11 +25,11 @@ from hca_orchestration.support.typing import HcaScratchDatasetName, MetadataType
         "gcs"
     },
 )
-def load_table_solid(
+def load_table_op(
     context: AbstractComputeExecutionContext,
         metadata_fanout_result: MetadataTypeFanoutResult
 ) -> Optional[JobId]:
-    """We want our dagster solids as dumb as possible so this is a simple facade
+    """We want our dagster ops as dumb as possible so this is a simple facade
     that delegates straight to the load_table function"""
     return load_table(
         context.resources.scratch_config,
