@@ -65,7 +65,7 @@ def load_hca_job():
 
 defs = dg.Definitions(
     jobs=[cut_project_snapshot_job("dev", "dev", "monster-dev@dev.test.firecloud.org"),
-          legacy_cut_snapshot_job("dev", "monster-dev@dev.test.firecloud.org"),
+          legacy_cut_snapshot_job("dev", "monster-dev@dev.test.firecloud.org"), #TODO remove this one - unused
           load_hca_job(),
           validate_ingress_job(),
           *configure_partitions_for_pipeline("cut_snapshot", run_config_for_cut_snapshot_partition),
