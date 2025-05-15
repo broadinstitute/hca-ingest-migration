@@ -22,7 +22,7 @@ from hca_orchestration.solids.load_hca.ingest_metadata_type import (
 )
 from hca_orchestration.solids.load_hca.load_table import (
     export_data,
-    load_table_solid,
+    load_table_op,
 )
 from hca_orchestration.support.typing import (
     HcaScratchDatasetName,
@@ -153,4 +153,4 @@ def inject_file_ids_solid(
 )
 def file_metadata_fanout(result: list[JobId], scratch_dataset_name: HcaScratchDatasetName) -> Optional[JobId]:
     results = ingest_file_metadata_type(result, scratch_dataset_name).map(inject_file_ids_solid)
-    return results.map(load_table_solid)
+    return results.map(load_table_op)
