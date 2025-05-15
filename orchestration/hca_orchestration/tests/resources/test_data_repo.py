@@ -1,6 +1,6 @@
 from datetime import datetime
 from re import search
-from unittest.mock import MagicMock, Mock
+from unittest.mock import Mock
 
 import pytest
 from dagster import ResourceDefinition, build_init_resource_context

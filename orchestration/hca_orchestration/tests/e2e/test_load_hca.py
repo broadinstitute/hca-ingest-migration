@@ -2,7 +2,6 @@ import logging
 import time
 
 import pytest
-from dagster import execute_pipeline
 from hca_orchestration.repositories.local_repository import load_hca_job
 from hca_orchestration.tests.support.bigquery import (
     assert_data_loaded,
@@ -13,10 +12,8 @@ from hca_orchestration.tests.support.bigquery import (
 @pytest.mark.e2e
 def test_load_hca(load_hca_run_config, dataset_name, tdr_bigquery_client, dataset_info):
     job = load_hca_job()
-    execute_pipeline(
-        job,
-        run_config=load_hca_run_config
-    )
+    result = job.execute_in_process(run_config=load_hca_run_config)
+    assert result.success
 
     logging.info("Waiting for metadata to propagate")
     time.sleep(600)  # pausing execution to allow for permissions to propagate

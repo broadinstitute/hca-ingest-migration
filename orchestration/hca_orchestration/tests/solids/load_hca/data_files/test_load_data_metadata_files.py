@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
 import pytest
-from dagster import SolidExecutionResult, execute_solid, ModeDefinition, ResourceDefinition
+from dagster import build_op_context, Failure
 from dagster_utils.contrib.data_repo.typing import JobId
 from data_repo_client import RepositoryApi
 from google.cloud.storage import Client
@@ -16,45 +16,39 @@ from hca_orchestration.support.typing import HcaScratchDatasetName, MetadataType
 
 
 @pytest.fixture
-def testing_mode_def():
-    return ModeDefinition(
-        resource_defs={
-            "scratch_config": ResourceDefinition.hardcoded_resource(ScratchConfig("fake", "fake", "fake", "fake", 123)),
-            "bigquery_service": ResourceDefinition.hardcoded_resource(MagicMock(spec=BigQueryService)),
-            "data_repo_client": ResourceDefinition.hardcoded_resource(MagicMock(spec=RepositoryApi)),
-            "target_hca_dataset": ResourceDefinition.hardcoded_resource(TdrDataset("fake", "fake", "fake", "fake", "fake")),
-            "data_repo_service": ResourceDefinition.hardcoded_resource(MagicMock(spec=DataRepoService)),
-            "gcs": ResourceDefinition.hardcoded_resource(MagicMock(spec=Client))
-        }
-    )
+def testing_resource_context():
+    return {
+        "scratch_config": ScratchConfig("fake", "fake", "fake", "fake", 123),
+        "bigquery_service": MagicMock(spec=BigQueryService),
+        "data_repo_client": MagicMock(spec=RepositoryApi),
+        "target_hca_dataset": TdrDataset("fake", "fake", "fake", "fake", "fake"),
+        "data_repo_service": MagicMock(spec=DataRepoService),
+        "gcs": MagicMock(spec=Client)
+    }
 
 
-def test_ingest_metadata_for_file_type(testing_mode_def):
+def test_ingest_metadata_for_file_type(testing_resource_context):
     metadata_fanout_result = MetadataTypeFanoutResult(
         scratch_dataset_name=HcaScratchDatasetName("dataset"),
         metadata_type=MetadataType("metadata"),
         path="path"
     )
 
-    result: SolidExecutionResult = execute_solid(
-        inject_file_ids_solid,
-        mode_def=testing_mode_def,
-        input_values={
-            "file_metadata_fanout_result": metadata_fanout_result
-        },
+    context = build_op_context(resources=testing_resource_context)
+    result = inject_file_ids_solid(
+        context,
+        file_metadata_fanout_result=metadata_fanout_result
     )
 
     assert result.success
 
 
-def test_file_metadata_fanout(testing_mode_def):
-    result: SolidExecutionResult = execute_solid(
-        file_metadata_fanout,
-        mode_def=testing_mode_def,
-        input_values={
-            "result": [JobId("abcdef")],
-            "scratch_dataset_name": HcaScratchDatasetName("dataset")
-        },
+def test_file_metadata_fanout(testing_resource_context):
+    context = build_op_context(resources=testing_resource_context)
+    result = file_metadata_fanout(
+        context,
+        result=[JobId("abcdef")],
+        scratch_dataset_name=HcaScratchDatasetName("dataset")
     )
 
     assert result.success

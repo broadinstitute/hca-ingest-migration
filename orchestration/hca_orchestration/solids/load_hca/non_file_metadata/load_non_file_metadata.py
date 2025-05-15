@@ -11,7 +11,7 @@ from hca_manage.common import JobId
 from hca_orchestration.solids.load_hca.ingest_metadata_type import (
     ingest_metadata_type,
 )
-from hca_orchestration.solids.load_hca.load_table import load_table_solid
+from hca_orchestration.solids.load_hca.load_table import load_table_op
 from hca_orchestration.support.typing import (
     HcaScratchDatasetName,
     MetadataType,
@@ -55,4 +55,4 @@ ingest_non_file_metadata_type = configured(ingest_metadata_type, name="ingest_no
 )
 def non_file_metadata_fanout(result: list[JobId], scratch_dataset_name: HcaScratchDatasetName) -> Optional[JobId]:
     results = ingest_non_file_metadata_type(result, scratch_dataset_name)
-    return results.map(load_table_solid)
+    return results.map(load_table_op)
