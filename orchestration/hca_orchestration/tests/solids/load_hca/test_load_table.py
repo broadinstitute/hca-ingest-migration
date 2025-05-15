@@ -1,7 +1,6 @@
-from unittest.mock import Mock
-
 import pytest
-from dagster import resource, ModeDefinition, ResourceDefinition, SolidExecutionResult, execute_solid
+from unittest.mock import Mock
+from dagster import build_op_context
 from dagster_utils.contrib.data_repo.typing import JobId
 from google.cloud.storage import Client, Blob
 
@@ -9,36 +8,23 @@ from hca_orchestration.contrib.bigquery import BigQueryService
 from hca_orchestration.contrib.data_repo.data_repo_service import DataRepoService
 from hca_orchestration.models.hca_dataset import TdrDataset
 from hca_orchestration.models.scratch import ScratchConfig
-from hca_orchestration.solids.load_hca.load_table import load_table_solid, clear_outdated
+from hca_orchestration.solids.load_hca.load_table import load_table_op, clear_outdated
 from hca_orchestration.support.typing import HcaScratchDatasetName, MetadataType, MetadataTypeFanoutResult
 from hca_orchestration.tests.support.gcs import FakeGCSClient, FakeGoogleBucket, HexBlobInfo
 
 
 @pytest.fixture
-def test_bucket_name():
-    return "my-fake-bucket"
+def scratch_config():
+    return ScratchConfig("my-fake-bucket", "fake_prefix", "fake", "fake", 123)
 
 
 @pytest.fixture
-def run_config(test_bucket_name):
-    return {
-        "resources": {
-            "scratch_config": {
-                "config": {
-                    "scratch_bucket_name": test_bucket_name,
-                    "scratch_bq_project": "bq_project",
-                    "scratch_dataset_prefix": "dataset_prefix",
-                    "scratch_table_expiration_ms": 86400000
-                }
-            },
-            "target_hca_dataset": {
-                "config": {
-                    "dataset_id": "dataset_id"
-                }
-            }
-        }
-    }
+def target_dataset():
+    return TdrDataset("fake", "fake", "fake", "fake", "fake")
 
+@pytest.fixture
+def data_repo_service():
+    return Mock(spec=DataRepoService)
 
 @pytest.fixture
 def metadata_fanout_result():
@@ -48,76 +34,43 @@ def metadata_fanout_result():
         path="path"
     )
 
-
 @pytest.fixture
-def data_repo_service():
-    data_repo_service = Mock(spec=DataRepoService)
-    data_repo_service.ingest_data = Mock(return_value=JobId("fake_ingest_job_id"))
-    data_repo_service.delete_data = Mock(return_value=JobId("fake_delete_job_id"))
-    return data_repo_service
+def bigquery_service():
+    service = Mock(spec=BigQueryService)
+    service.get_num_rows_in_table = Mock(return_value=0)
+    return service
 
 
 @pytest.fixture
-def load_table_test_mode(data_repo_service, test_bucket_name):
-    fake_bucket_name = "my-fake-bucket"
-    fake_prefix = "fake-prefix"
-    scratch_config = ScratchConfig(fake_bucket_name, fake_prefix, "fake", "fake", 123)
-    target_dataset = TdrDataset("fake", "fake", "fake", "fake", "fake")
-    bigquery_service = Mock(spec=BigQueryService)
-    bigquery_service.get_num_rows_in_table = Mock(return_value=0)
-
-    base_def = ModeDefinition(
-        "test_load_table",
-        resource_defs={
-            "bigquery_service": ResourceDefinition.hardcoded_resource(bigquery_service),
-            "scratch_config": ResourceDefinition.hardcoded_resource(scratch_config),
-            "target_hca_dataset": ResourceDefinition.hardcoded_resource(target_dataset)
-        }
-    )
-
-    test_bucket = FakeGoogleBucket(
-        {f"gs://{fake_bucket_name}/{fake_prefix}": HexBlobInfo(
-            hex_md5="b2d6ec45472467c836f253bd170182c7", content="test content")}
-    )
-    base_def.resource_defs["gcs"] = ResourceDefinition.hardcoded_resource(
-        FakeGCSClient(
-            buckets={test_bucket_name: test_bucket}
+def context_factory(scratch_config, target_dataset):
+    def _create_context(bigquery_service, run_config, data_repo_service):
+        return build_op_context(
+            resources={
+                "bigquery_service": bigquery_service,
+                "scratch_config": scratch_config,
+                "target_hca_dataset": target_dataset,
+                "data_repo_service": data_repo_service,
+            },
+            config=run_config,
         )
-    )
+    return _create_context
 
-    base_def.resource_defs["data_repo_service"] = ResourceDefinition.hardcoded_resource(
-        data_repo_service
-    )
-
-    return base_def
-
-
-def test_load_table(
-        load_table_test_mode,
-        metadata_fanout_result,
-        run_config
-):
-    result: SolidExecutionResult = execute_solid(
-        load_table_solid,
-        mode_def=load_table_test_mode,
-        input_values={
-            "metadata_fanout_result": metadata_fanout_result
-        },
-        run_config=run_config
-    )
+def test_load_table(metadata_fanout_result, run_config, data_repo_service, context_factory):
+    context = context_factory(bigquery_service, run_config, data_repo_service)
+    result = load_table_op(context, metadata_fanout_result=metadata_fanout_result)
 
     assert result.success
 
 
 def test_clear_outdated(data_repo_service):
-    scratch_config = ScratchConfig(
+    scratch_config_to_clear = ScratchConfig(
         "fake_scratch_bucket",
         "fake_scratch_prefix",
         "fake_bq_project",
         "fake_scratch_dataset_prefix",
         0
     )
-    target_hca_dataset = TdrDataset(
+    target_hca_dataset_to_clear = TdrDataset(
         "fake_target_dataset_name",
         "1234abc",
         "fake_target_bq_project_id",
@@ -131,8 +84,8 @@ def test_clear_outdated(data_repo_service):
     gcs.list_blobs = Mock(return_value=[blob])
 
     job_id = clear_outdated(
-        scratch_config,
-        target_hca_dataset,
+        scratch_config_to_clear,
+        target_hca_dataset_to_clear,
         MetadataType("sequence_file"),
         Mock(spec=BigQueryService),
         data_repo_service,
@@ -142,49 +95,22 @@ def test_clear_outdated(data_repo_service):
     assert job_id == "fake_delete_job_id"
 
 
-def test_load_table_yes_new_rows(
-        load_table_test_mode,
-        metadata_fanout_result,
-        run_config
-):
-    @resource
-    def _mock_bq_service(_init_context) -> BigQueryService:
+def test_load_table_yes_new_rows(metadata_fanout_result, run_config, data_repo_service, context_factory):
+    def _mock_bq_service():
         svc = Mock(spec=BigQueryService)
         svc.get_num_rows_in_table = Mock(return_value=1)
         return svc
 
-    this_test_mode = ModeDefinition(
-        "test_start_load",
-        resource_defs={**load_table_test_mode.resource_defs}
-    )
-    this_test_mode.resource_defs["bigquery_service"] = _mock_bq_service
+    bigquery_service = _mock_bq_service()
+    context = context_factory(bigquery_service, run_config, data_repo_service)
 
-    result: SolidExecutionResult = execute_solid(
-        load_table_solid,
-        mode_def=this_test_mode,
-        input_values={
-            "metadata_fanout_result": metadata_fanout_result
-        },
-        run_config=run_config
-    )
-
+    result = load_table_op(context, metadata_fanout_result=metadata_fanout_result)
     assert result.success
     assert result.output_value("result") == "fake_delete_job_id"
 
 
-def test_load_table_no_new_rows(
-        load_table_test_mode,
-        metadata_fanout_result,
-        run_config
-):
-    result: SolidExecutionResult = execute_solid(
-        load_table_solid,
-        mode_def=load_table_test_mode,
-        input_values={
-            "metadata_fanout_result": metadata_fanout_result
-        },
-        run_config=run_config
-    )
-
+def test_load_table_no_new_rows(metadata_fanout_result, run_config, data_repo_service, context_factory):
+    context = context_factory(bigquery_service, run_config, data_repo_service)
+    result = load_table_op(context, metadata_fanout_result=metadata_fanout_result)
     assert result.success
     assert result.output_value("result") is None
